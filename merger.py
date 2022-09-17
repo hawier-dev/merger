@@ -1,4 +1,4 @@
-# Skrypt do laczenia tile'i w jedno zdjecie
+# Image manipulation tool to merge tiled image into one image.
 # python ~/scripts/merger.py --path__Path --out__Output_path
 
 from PIL import Image
