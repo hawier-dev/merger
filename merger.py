@@ -1,16 +1,11 @@
 # Skrypt do laczenia tile'i w jedno zdjecie
 # python ~/scripts/merger.py --path__Path --out__Output_path
 
-from tokenize import group
 from PIL import Image
 import numpy as np
 import argparse
-import glob
 import os
-import re
 import warnings
-from operator import itemgetter
-from rich.pretty import pprint
 from rich.console import Console
 from rich import print
 from rich.text import Text
