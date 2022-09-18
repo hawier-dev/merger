@@ -1,47 +1,71 @@
 # Image manipulation tool to merge tiled image into one image.
 # python ~/scripts/merger.py --path__Path --out__Output_path
 
-from PIL import Image
+
 import numpy as np
 import argparse
 import os
 import warnings
-from rich.console import Console
-from rich import print
-from rich.text import Text
-from rich.panel import Panel
+from PIL import Image
 import re
+from natsort import natsorted
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--path", type=str, required=True)
 parser.add_argument("--out", type=str, required=True)
 args = parser.parse_args()
 
+rich_printing = True
+try:
+    from rich.console import Console
+    from rich import print
+    from rich.text import Text
+    from rich.panel import Panel
+    from rich.pretty import pprint
+except ImportError:
+    rich_printing = False
+
 all_images = [image for image in os.listdir(args.path)]
+all_images = natsorted(all_images)
 
 image_ext = all_images[0].split('.')[-1]
 image_name = all_images[0].replace(re.findall(
     f'_[0-9]+_[0-9]+.{image_ext}', all_images[0])[-1], '')
 
-# Image info
-console = Console()
 
-# title of image panel
-panel_title_text = Text()
-panel_title_text.append("MERGE", style='green')
+def print_rich_image_info():
+    # Image info
+    console = Console()
 
-# image name
-image_name_text = Text()
-image_name_text.append("Image Name: ")
-image_name_text.append(image_name + f'.{image_ext}', style='blue')
+    # title of image panel
+    panel_title_text = Text()
+    panel_title_text.append("MERGE", style='green')
 
-print(Panel.fit(image_name_text, style='bold', title=panel_title_text))
-text = Text()
-text.append("Tile count: ")
-text.append(f"{len(all_images)}\n", style='bold blue')
-text.append("Extension: ")
-text.append(f"{image_ext}\n", style='bold blue')
-console.print(text)
+    # image name
+    image_name_text = Text()
+    image_name_text.append("Image Name: ")
+    image_name_text.append(image_name + f'.{image_ext}', style='blue')
+
+    print(Panel.fit(image_name_text, style='bold', title=panel_title_text))
+    text = Text()
+    text.append("Tile count: ")
+    text.append(f"{len(all_images)}\n", style='bold blue')
+    text.append("Extension: ")
+    text.append(f"{image_ext}\n", style='bold blue')
+    console.print(text)
+
+
+def print_image_info():
+    # Image info
+    print(f"Image Name: {image_name}.{image_ext}\n")
+    print(f"Tile count: {len(all_images)}\n")
+    print(f"Extension: {image_ext}\n")
+
+
+if rich_printing:
+    print_rich_image_info()
+else:
+    print_image_info()
 
 
 def group_images():
@@ -83,17 +107,24 @@ with warnings.catch_warnings():
         grouped_images = group_images()
         full_image = merge(grouped_images)
         full_image.save(f'{image_name}.{image_ext}')
-        console = Console()
-        text = Text()
-        text.append("< Done >\n", style="bold green")
-        text.append(f"Zapisano: ", style='bold')
-        text.append(f'{args.out}/{image_name}.{image_ext}\n',
-                    style="bold green")
-        console.print(text)
+        if rich_printing:
+            console = Console()
+            text = Text()
+            text.append("< Done >\n", style="bold green")
+            text.append(f"Zapisano: ", style='bold')
+            text.append(f'{args.out}/{image_name}.{image_ext}\n',
+                        style="bold green")
+            console.print(text)
+        else:
+            print('\nDone')
+            print(f'Zapisano: {args.out}/{image_name}.{image_ext}\n')
 
     except Exception as err:
-        console = Console()
-        text = Text()
-        text.append(f"Error: ", style="bold red")
-        text.append(f"{err}\n", style="bold white")
-        console.print(text)
+        if rich_printing:
+            console = Console()
+            text = Text()
+            text.append(f"Error: ", style="bold red")
+            text.append(f"{err}\n", style="bold white")
+            console.print(text)
+        else:
+            print(f'Error: {err}\n')

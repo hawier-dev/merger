@@ -9,8 +9,9 @@ Inspired by: [pnytko/merger](https://github.com/pnytko/merger)
 ```bash
 python3
 numpy
-rich
+natsort
 pillow
+rich # optional
 ```
 
 ## Using
