@@ -106,7 +106,7 @@ with warnings.catch_warnings():
     try:
         grouped_images = group_images()
         full_image = merge(grouped_images)
-        full_image.save(f'{image_name}.{image_ext}')
+        full_image.save(f'{args.out}/{image_name}.{image_ext}')
         if rich_printing:
             console = Console()
             text = Text()
