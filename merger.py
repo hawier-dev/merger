@@ -6,14 +6,16 @@ import numpy as np
 import argparse
 import os
 import warnings
-from PIL import Image
 import re
+import sys
+from PIL import Image
 from natsort import natsorted
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--path", type=str, required=True)
 parser.add_argument("--out", type=str, required=True)
 args = parser.parse_args()
+
 
 rich_printing = True
 try:
@@ -25,7 +27,14 @@ try:
 except ImportError:
     rich_printing = False
 
-all_images = [image for image in os.listdir(args.path)]
+platform_path = '/'
+if sys.platform =='win32':
+    platform_path = '\\'
+
+image_path = args.path[:-1] if args.path.endswith(platform_path) else args.path
+out_path = args.out[:-1] if args.out.endswith(platform_path) else args.out
+
+all_images = [image for image in os.listdir(image_path)]
 all_images = natsorted(all_images)
 
 image_ext = all_images[0].split('.')[-1]
@@ -76,9 +85,9 @@ def group_images():
         image_name_no_ext = image.replace('.' + image.split('.')[-1], '')
         coord_y = image_name_no_ext.split('_')[-2]
         if int(coord_y) == last_y:
-            grouped_images[group_index].append(args.path + '/' + image)
+            grouped_images[group_index].append(image_path + platform_path + image)
         else:
-            grouped_images.append([args.path + '/' + image])
+            grouped_images.append([image_path + platform_path + image])
             group_index += 1
             last_y = int(coord_y)
 
@@ -106,18 +115,18 @@ with warnings.catch_warnings():
     try:
         grouped_images = group_images()
         full_image = merge(grouped_images)
-        full_image.save(f'{args.out}/{image_name}.{image_ext}')
+        full_image.save(f'{out_path}{platform_path}{image_name}.{image_ext}')
         if rich_printing:
             console = Console()
             text = Text()
             text.append("< Done >\n", style="bold green")
             text.append(f"Zapisano: ", style='bold')
-            text.append(f'{args.out}/{image_name}.{image_ext}\n',
+            text.append(f'{out_path}{platform_path}{image_name}.{image_ext}\n',
                         style="bold green")
             console.print(text)
         else:
             print('\nDone')
-            print(f'Zapisano: {args.out}/{image_name}.{image_ext}\n')
+            print(f'Zapisano: {out_path}{platform_path}{image_name}.{image_ext}\n')
 
     except Exception as err:
         if rich_printing:
