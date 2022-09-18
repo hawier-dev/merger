@@ -1,4 +1,4 @@
-# Merger
+# Python Image Merger
 
 ![Splitter showcase](./showcase.gif)
 
