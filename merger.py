@@ -28,7 +28,7 @@ except ImportError:
     rich_printing = False
 
 platform_path = '/'
-if sys.platform =='win32':
+if sys.platform == 'win32':
     platform_path = '\\'
 
 image_path = args.path[:-1] if args.path.endswith(platform_path) else args.path
@@ -85,7 +85,8 @@ def group_images():
         image_name_no_ext = image.replace('.' + image.split('.')[-1], '')
         coord_y = image_name_no_ext.split('_')[-2]
         if int(coord_y) == last_y:
-            grouped_images[group_index].append(image_path + platform_path + image)
+            grouped_images[group_index].append(
+                image_path + platform_path + image)
         else:
             grouped_images.append([image_path + platform_path + image])
             group_index += 1
@@ -120,13 +121,14 @@ with warnings.catch_warnings():
             console = Console()
             text = Text()
             text.append("< Done >\n", style="bold green")
-            text.append(f"Zapisano: ", style='bold')
+            text.append(f"Saved: ", style='bold')
             text.append(f'{out_path}{platform_path}{image_name}.{image_ext}\n',
                         style="bold green")
             console.print(text)
         else:
             print('\nDone')
-            print(f'Zapisano: {out_path}{platform_path}{image_name}.{image_ext}\n')
+            print(
+                f'Saved: {out_path}{platform_path}{image_name}.{image_ext}\n')
 
     except Exception as err:
         if rich_printing:
