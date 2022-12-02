@@ -1,7 +1,5 @@
 # Python Image Merger
 
-![Splitter showcase](./showcase.gif)
-
 Image manipulation tool to merge **tiled image** into one image.
 
 Inspired by: [pnytko/merger](https://github.com/pnytko/merger)
