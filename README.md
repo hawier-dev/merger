@@ -13,7 +13,6 @@ python3
 numpy
 natsort
 pillow
-rich # optional
 ```
 
 ## Using
