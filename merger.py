@@ -33,7 +33,7 @@ def parse_args():
 
     if (
         os.path.isdir(args.path)
-        and len(re.findall(args.path, "_tiled[0-9]+")) == 0
+        and len(re.findall("_tiled[0-9]+", args.path)) == 0
         and not args.path.endswith("_tiled")
     ):
         split_dirs = [
