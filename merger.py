@@ -1,7 +1,5 @@
 """
-Merger
-
-Merge all images in a folder into one image
+Merge all images in a folder into one image.
 
 Usage:
     python merger.py --path <image_path> --out <out_path>
@@ -33,17 +31,24 @@ def parse_args():
     )
     args = parser.parse_args()
 
-    if os.path.isdir(args.path) and not args.path.endswith("_tiled"):
+    if (
+        os.path.isdir(args.path)
+        and len(re.findall(args.path, "_tiled[0-9]+")) == 0
+        and not args.path.endswith("_tiled")
+    ):
         split_dirs = [
             os.path.join(args.path, split_dir)
             for split_dir in os.listdir(args.path)
             if os.path.isdir(os.path.join(args.path, split_dir))
-            and split_dir.endswith("_tiled")
+            if split_dir.endswith("_tiled")
+            or len(re.findall("_tiled[0-9]+", split_dir)) > 0
         ]
-    elif os.path.isdir(args.path) and args.path.endswith("_tiled"):
+    elif os.path.isdir(args.path):
         split_dirs = [args.path]
     else:
         split_dirs = []
+
+    print(split_dirs)
 
     if not split_dirs:
         print("No tiled images found in the specified directory.")
