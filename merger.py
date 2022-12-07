@@ -17,6 +17,15 @@ from PIL import Image
 from natsort import natsorted
 
 
+def success_print(title, message):
+    print(f"\033[92m{title}\033[0m: {message}")
+
+
+def error_print(title, message):
+    print(f"\033[91m{title}\033[0m: {message}")
+    exit(1)
+
+
 def parse_args():
     parser = argparse.ArgumentParser("Merge all images in a folder into one image")
     parser.add_argument(
@@ -48,11 +57,10 @@ def parse_args():
     else:
         split_dirs = []
 
-    print(split_dirs)
-
     if not split_dirs:
-        print("No tiled images found in the specified directory.")
-        exit(1)
+        error_print("Error", "No tiled images found in the specified directory.")
+
+    success_print("Success", f"Found {len(split_dirs)} tiled images.")
 
     return split_dirs, args.out
 
@@ -114,6 +122,11 @@ def main():
         full_image = merge(grouped_images)
 
         image_ext = all_images[0].split(".")[-1]
+
+        success_print(
+            "Saving",
+            f"{os.path.join(out_path, image_name)}.{image_ext}",
+        )
         full_image.save(os.path.join(out_path, image_name + "_merged." + image_ext))
 
 
