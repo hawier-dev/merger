@@ -40,19 +40,17 @@ def parse_args():
     )
     args = parser.parse_args()
 
-    if (
-        os.path.isdir(args.path)
-        and len(re.findall("_tiled[0-9]+", args.path)) == 0
-        and not args.path.endswith("_tiled")
-    ):
+    args.path = os.path.abspath(args.path)
+    files = check_for_files(args.path)
+
+    if os.path.isdir(args.path) and not files:
         split_dirs = [
             os.path.join(args.path, split_dir)
             for split_dir in os.listdir(args.path)
             if os.path.isdir(os.path.join(args.path, split_dir))
-            if split_dir.endswith("_tiled")
-            or len(re.findall("_tiled[0-9]+", split_dir)) > 0
+            if check_for_files(os.path.join(args.path, split_dir))
         ]
-    elif os.path.isdir(args.path):
+    elif os.path.isdir(args.path) and files:
         split_dirs = [args.path]
     else:
         split_dirs = []
@@ -63,6 +61,16 @@ def parse_args():
     success_print("Success", f"Found {len(split_dirs)} tiled images.")
 
     return split_dirs, args.out
+
+
+def check_for_files(path):
+    files = []
+    for file in os.listdir(path):
+        matches = re.findall("_[0-9]+_[0-9]+.[a-zA-Z]+", file)
+        if matches:
+            files.append(file)
+
+    return files
 
 
 def check_image_file(image):
