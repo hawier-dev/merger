@@ -60,6 +60,7 @@ def parse_args():
 
     success_print("Success", f"Found {len(split_dirs)} tiled images.")
 
+    os.makedirs(args.out, exist_ok=True)
     return split_dirs, args.out
 
 
